@@ -1,0 +1,61 @@
+import java.io.*;
+class Main
+  	{
+	public static void main(String args[]) throws IOException
+		{
+		IdLexer lex = new IdLexer(new FileReader("input"));
+		Token token = lex.yylex();
+		while(token.text != null)
+			{
+			token = lex.yylex();
+			}
+		}
+	}
+class Token
+	{
+	String text;
+	Token (String t) {text = t;}
+	}
+%%
+quote = [\"]
+arithmetic = [\+\-\*\/\&]
+digit=[0-9]
+letter=[a-zA-Z]
+whitespace=[ \t\n]
+%public
+%class IdLexer
+%type void
+%eofval{
+	return new Token(null);
+%eofval}
+%type Token
+
+%%
+
+(var|main|then|else|while|for) {System.out.println(yytext() +" keyword");}
+(integer|char|string|float) {System.out.println(yytext() +" datatypes");}
+{quote}{letter}*{quote} {System.out.println("String: "+ yytext());}
+{letter}({letter}|{digit})* {System.out.println(yytext() +" Identifiers");}
+
+[input] {System.out.println(yytext() +" input function");}
+[output] {System.out.println(yytext() +" output function");}
+((\|\|)|(\&\&)|(!)|(==)|(\>)|(\<)|(\<\=)|(\>\=)) {System.out.println(yytext() +" Logical operators");}
+((\+\+)|(\-\-)|(\+\=)|(\-\=)|(\*\=)|(\/\=)) {System.out.println(yytext() +" inc/dec operators");}
+{digit}+ {System.out.println(yytext() +" integer constant");}
+{digit}+\.{digit}+  {System.out.println(yytext() +" float constant");}
+((\+)|(\-)|(\*)|(\/)|(\%)) {System.out.println(yytext() +" Logical Operator");}
+[if] {System.out.println(yytext() +" if");}
+"," {System.out.println(yytext() +" comma");}
+";" {System.out.println(yytext() +" semicolon");}
+{whitespace} {}
+\= {System.out.println(yytext() +" Assignment operator");}
+\( {System.out.println(yytext() +" Left paranthesis");}
+\) {System.out.println(yytext() +" right paranthesis");}
+\{ {System.out.println(yytext() +" Left curly braces");}
+\} {System.out.println(yytext() +" right curly braces");}
+
+[\n] {System.out.println(" NL ");}
+
+
+
+
